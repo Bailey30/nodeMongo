@@ -1,0 +1,25 @@
+{
+  "name": "nodemongo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bailey30/nodeMongo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Bailey30/nodeMongo/issues"
+  },
+  "homepage": "https://github.com/Bailey30/nodeMongo#readme",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "mongodb": "^4.2.0",
+    "yargs": "^17.2.1"
+  }
+}
