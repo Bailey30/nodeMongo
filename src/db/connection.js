@@ -10,6 +10,7 @@ const connection = async (crudFunc, dataObj) => {
         console.log("Connection successful");
         const db = client.db("testDb") //creating new database
         const collection = db.collection("movies") //creating new collection
+        collection.createIndex({title: "text", actor: "text"})
         await crudFunc(collection, dataObj)
         // await collection.insertOne({name: "lotr"})
         client.close();

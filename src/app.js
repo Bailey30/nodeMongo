@@ -2,7 +2,7 @@ const { connect } = require("http2")
 const yargs = require("yargs")
 
 const connection = require("./db/connection.js")
-const { addMovie, listMovies, removeMovies, updateRating, updateAny, searchRating, addActor, searchActor } = require("./utils")
+const { addMovie, listMovies, removeMovies, updateRating, searchRating, addActor, searchActor, searchAll, removeDuplicates, searchTerm, findAndUpdate, setValue } = require("./utils")
 
 const command = process.argv[2]
 
@@ -36,6 +36,25 @@ const app = async () => {
         await connection(addActor, dataObj)
     } else if (yargs.argv.searchActor) {
         await connection(searchActor, yargs.argv.actor)
+    } else if (yargs.argv.searchAll) {
+        await connection(searchAll, yargs.argv.query)
+    } else if (yargs.argv.removeDuplicates) {
+        await connection(removeDuplicates, yargs.argv.query)
+    } else if (yargs.argv.searchTerm) {
+        await connection(searchTerm, yargs.argv.term)
+    } else if (yargs.argv.findandupdate) {
+        const searchData = {
+            title: yargs.argv.title,
+            actor: yargs.argv.actor
+        }
+        await connection(findAndUpdate, searchData)
+    } else if (yargs.argv.setvalue) {
+        const setData = {
+            title: yargs.argv.title,
+            key: yargs.argv.key,
+            value: yargs.argv.value
+        }
+        await connection(setValue, setData)
     }
     else {
         console.log("Incorrent input");
