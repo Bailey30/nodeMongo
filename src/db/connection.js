@@ -20,3 +20,4 @@ const connection = async (crudFunc, dataObj) => {
 
 
 module.exports = connection
+
