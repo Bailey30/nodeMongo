@@ -13,7 +13,7 @@ exports.listMovies = async (collection) => {
         console.log(error);
     }
 }
-exports.removeMovies = async (collection, args) => {
+exports.removeMovies = async (collection, args) => { // removes from database
     try {
         await collection.deleteOne({ "title": args })
         console.log(`${args} removed`);
@@ -21,14 +21,25 @@ exports.removeMovies = async (collection, args) => {
         console.log(error);
     }
 }
-exports.updateRating = async (collection, args) => {
+
+exports.updateMany = async (collection, args) => { //searches for key value pair and updates defined key value pair
+    try {
+        const list = await collection.updateMany({[args.key1]: args.value1}, {$set: {[args.key2]: args.value2}})
+        console.log(list);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+exports.updateRating = async (collection, args) => { //updates rating
     try {
         await collection.updateOne({"title": args.title}, {$set: {"rating": args.rating}})
     } catch (error) {
         console.log(error);
     }
 }
-exports.searchRating = async (collection, args) => {
+exports.searchRating = async (collection, args) => { //search for films with defined rating
     try {
         const list = await collection.find({"rating": args}).toArray()
         console.log(list);
@@ -36,14 +47,14 @@ exports.searchRating = async (collection, args) => {
         console.log(error);
     }
 }
-exports.addActor = async (collection, args) => {
+exports.addActor = async (collection, args) => { //adds to actor array
     try {
         await collection.updateOne({"title": args.title}, {$push: {"actor": args.actor}} )
     } catch (error) {
         console.log(error);
     }
 }
-exports.searchActor = async (collection, args) => {
+exports.searchActor = async (collection, args) => { //search for actor
     try {
         const list = await collection.find({"actor": args}).toArray()
         console.log(list);
@@ -51,7 +62,7 @@ exports.searchActor = async (collection, args) => {
         console.log(error);
     }
 }
-exports.searchAll = async (collection, args) => {
+exports.searchAll = async (collection, args) => { //search for title, actor or rating
     try {
         const list = await collection.find({$or: [{"title": args},{"actor": args}, {"rating": args} ]}).toArray()
         // for (let i = 0; i < list.length/2; i++) {
@@ -67,21 +78,31 @@ exports.searchAll = async (collection, args) => {
     }
 }
 
-exports.removeDuplicates = async (collection, args, removeMovies) => {
+exports.removeDuplicates = async (collection, args) => { // removes duplicates from database - dont use on actors - ugly code, probably shouldnt use at all
     try {
         const list = await collection.find().toArray()
         for (let i = 0; i < list.length; i++) {
             const list = await collection.find().toArray()
             if (Object.values(list[i]).includes(args)) {
                 this.removeMovies(collection, args)
-            } // removes duplicates from database - dont use on actors
+            } 
         }
         console.log(list);
     } catch (error) {
         console.log(error);
     }
 }
-exports.searchTerm = async (collection, args) => { ///searches for partial names
+
+exports.deleteMany = async (collection, args) => { // remove every instance of film with same name
+    try {
+        const list = await collection.deleteMany ({"title": args})
+        console.log(list);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+exports.searchTerm = async (collection, args) => { ///searches for words rather than complete names. returns in order of relevance
     try {
         const list = await collection.find( {$text: { $search: args}}, {score: {$meta: "textScore"}}).toArray()
         console.log(list);
@@ -89,7 +110,7 @@ exports.searchTerm = async (collection, args) => { ///searches for partial names
         console.log(error);
     }
 }
-exports.findAndUpdate = async (collection, args) => {
+exports.findAndUpdate = async (collection, args) => { ///updates actor only
     try {
     const list = await collection.findOneAndUpdate( { "title" : args.title }, {$set: { "actor": args.actor}})
     console.log(list);
@@ -97,9 +118,7 @@ exports.findAndUpdate = async (collection, args) => {
         console.log(error);
     }
 }
-exports.setValue = async (collection, args) => {
-    
-
+exports.setValue = async (collection, args) => { //updates any value or creates new value
     try {
         const list = await collection.updateOne({"title": args.title}, {$set: {[args.key]: args.value}})
         console.log(list);
